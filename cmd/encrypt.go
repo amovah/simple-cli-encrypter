@@ -37,16 +37,16 @@ var encryptCmd = &cobra.Command{
 			log.Fatal(err)
 		}
 
-		validateKey := func(input string) error {
+		validatePassword := func(input string) error {
 			if len(input) < 1 {
-				return errors.New("key cannot be empty")
+				return errors.New("password cannot be empty")
 			}
 			return nil
 		}
 
 		promptPassword := promptui.Prompt{
 			Label:    "Password",
-			Validate: validateKey,
+			Validate: validatePassword,
 			Mask:     '*',
 		}
 
@@ -55,7 +55,25 @@ var encryptCmd = &cobra.Command{
 			log.Fatal(err)
 		}
 
-		encrypted, err := core.Encrypt([]byte(resultPassword), []byte(resultData))
+		validateReEnter := func(input string) error {
+			if input != resultPassword {
+				return errors.New("password is not same")
+			}
+			return nil
+		}
+
+		promptTypeAgain := promptui.Prompt{
+			Label:    "Type password again",
+			Validate: validateReEnter,
+			Mask:     '*',
+		}
+
+		resultReType, err := promptTypeAgain.Run()
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		encrypted, err := core.Encrypt([]byte(resultReType), []byte(resultData))
 		if err != nil {
 			log.Fatal(err)
 		}
