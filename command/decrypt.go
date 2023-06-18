@@ -1,7 +1,7 @@
 /*
 Copyright © 2023 NAME HERE <EMAIL ADDRESS>
 */
-package cmd
+package command
 
 import (
 	"encoding/hex"
@@ -14,11 +14,11 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// encryptCmd represents the encrypt command
-var encryptCmd = &cobra.Command{
-	Use:     "encrypt",
-	Short:   "encrypt a text",
-	Aliases: []string{"enc"},
+// decryptCmd represents the decrypt command
+var decryptCmd = &cobra.Command{
+	Use:     "decrypt",
+	Short:   "decrypt a text",
+	Aliases: []string{"dec"},
 	Run: func(cmd *cobra.Command, args []string) {
 		validateData := func(input string) error {
 			if len(input) < 1 {
@@ -37,16 +37,16 @@ var encryptCmd = &cobra.Command{
 			log.Fatal(err)
 		}
 
-		validatePassword := func(input string) error {
+		validateKey := func(input string) error {
 			if len(input) < 1 {
-				return errors.New("password cannot be empty")
+				return errors.New("key cannot be empty")
 			}
 			return nil
 		}
 
 		promptPassword := promptui.Prompt{
 			Label:    "Password",
-			Validate: validatePassword,
+			Validate: validateKey,
 			Mask:     '*',
 		}
 
@@ -55,43 +55,30 @@ var encryptCmd = &cobra.Command{
 			log.Fatal(err)
 		}
 
-		validateReEnter := func(input string) error {
-			if input != resultPassword {
-				return errors.New("password is not same")
-			}
-			return nil
-		}
-
-		promptTypeAgain := promptui.Prompt{
-			Label:    "Type password again",
-			Validate: validateReEnter,
-			Mask:     '*',
-		}
-
-		resultReType, err := promptTypeAgain.Run()
+		encrypted, err := hex.DecodeString(resultData)
 		if err != nil {
 			log.Fatal(err)
 		}
 
-		encrypted, err := core.Encrypt([]byte(resultReType), []byte(resultData))
+		decrypted, err := core.Decrypt([]byte(resultPassword), encrypted)
 		if err != nil {
 			log.Fatal(err)
 		}
 
-		fmt.Printf("encrypted text: %s \n", hex.EncodeToString(encrypted))
+		fmt.Printf("decrypted text: %s \n", decrypted)
 	},
 }
 
 func init() {
-	rootCmd.AddCommand(encryptCmd)
+	rootCmd.AddCommand(decryptCmd)
 
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
-	// encryptCmd.PersistentFlags().String("foo", "", "A help for foo")
+	// decryptCmd.PersistentFlags().String("foo", "", "A help for foo")
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	// encryptCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	// decryptCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
