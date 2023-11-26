@@ -14,11 +14,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// encryptCmd represents the encrypt command
-var encryptCmd = &cobra.Command{
-	Use:     "encrypt",
-	Short:   "encrypt a text",
-	Aliases: []string{"enc"},
+// safeecnryptCmd represents the safeecnrypt command
+var safeecnryptCmd = &cobra.Command{
+	Use:   "safeecnrypt",
+	Short: "encrypt safely",
 	Run: func(cmd *cobra.Command, args []string) {
 		userTxt, err := prompt.New().Ask("Data:").Input("")
 		if err != nil {
@@ -28,6 +27,15 @@ var encryptCmd = &cobra.Command{
 		userPass, err := prompt.New().Ask("Pasword:").Input("", input.WithEchoMode(input.EchoPassword))
 		if err != nil {
 			log.Fatal(err)
+		}
+
+		userPassAgain, err := prompt.New().Ask("Password Again:").Input("", input.WithEchoMode(input.EchoPassword))
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		if userPass != userPassAgain {
+			fmt.Println("password does not match")
 		}
 
 		encrypted, err := core.Encrypt([]byte(userPass), []byte(userTxt))
@@ -40,15 +48,15 @@ var encryptCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.AddCommand(encryptCmd)
+	rootCmd.AddCommand(safeecnryptCmd)
 
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
-	// encryptCmd.PersistentFlags().String("foo", "", "A help for foo")
+	// safeecnryptCmd.PersistentFlags().String("foo", "", "A help for foo")
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	// encryptCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	// safeecnryptCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }

@@ -5,12 +5,12 @@ package command
 
 import (
 	"encoding/hex"
-	"errors"
 	"fmt"
 	"log"
 
 	"github.com/amovah/simple-cli-encrypter/core"
-	"github.com/manifoldco/promptui"
+	"github.com/cqroot/prompt"
+	"github.com/cqroot/prompt/input"
 	"github.com/spf13/cobra"
 )
 
@@ -20,47 +20,22 @@ var decryptCmd = &cobra.Command{
 	Short:   "decrypt a text",
 	Aliases: []string{"dec"},
 	Run: func(cmd *cobra.Command, args []string) {
-		validateData := func(input string) error {
-			if len(input) < 1 {
-				return errors.New("text cannot be empty")
-			}
-			return nil
-		}
-
-		promptData := promptui.Prompt{
-			Label:    "Data",
-			Validate: validateData,
-		}
-
-		resultData, err := promptData.Run()
+		userTxt, err := prompt.New().Ask("Data:").Input("")
 		if err != nil {
 			log.Fatal(err)
 		}
 
-		validateKey := func(input string) error {
-			if len(input) < 1 {
-				return errors.New("key cannot be empty")
-			}
-			return nil
-		}
-
-		promptPassword := promptui.Prompt{
-			Label:    "Password",
-			Validate: validateKey,
-			Mask:     '*',
-		}
-
-		resultPassword, err := promptPassword.Run()
+		userPass, err := prompt.New().Ask("Pasword:").Input("", input.WithEchoMode(input.EchoPassword))
 		if err != nil {
 			log.Fatal(err)
 		}
 
-		encrypted, err := hex.DecodeString(resultData)
+		encrypted, err := hex.DecodeString(userTxt)
 		if err != nil {
 			log.Fatal(err)
 		}
 
-		decrypted, err := core.Decrypt([]byte(resultPassword), encrypted)
+		decrypted, err := core.Decrypt([]byte(userPass), encrypted)
 		if err != nil {
 			log.Fatal(err)
 		}
