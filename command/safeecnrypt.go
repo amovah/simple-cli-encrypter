@@ -7,10 +7,12 @@ import (
 	"encoding/hex"
 	"fmt"
 	"log"
+	"math"
 
 	"github.com/amovah/simple-cli-encrypter/core"
 	"github.com/cqroot/prompt"
 	"github.com/cqroot/prompt/input"
+	"github.com/cqroot/prompt/write"
 	"github.com/spf13/cobra"
 )
 
@@ -19,7 +21,7 @@ var safeecnryptCmd = &cobra.Command{
 	Use:   "safeecnrypt",
 	Short: "encrypt safely",
 	Run: func(cmd *cobra.Command, args []string) {
-		userTxt, err := prompt.New().Ask("Data:").Input("")
+		userTxt, err := prompt.New().Ask("Data:").Write("", write.WithCharLimit(math.MaxInt))
 		if err != nil {
 			log.Fatal(err)
 		}
