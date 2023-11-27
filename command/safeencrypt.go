@@ -18,8 +18,9 @@ import (
 
 // safeecnryptCmd represents the safeecnrypt command
 var safeecnryptCmd = &cobra.Command{
-	Use:   "safeecnrypt",
-	Short: "encrypt safely",
+	Use:     "safeencrypt",
+	Short:   "encrypt safely",
+	Aliases: []string{"senc"},
 	Run: func(cmd *cobra.Command, args []string) {
 		userTxt, err := prompt.New().Ask("Data:").Write("", write.WithCharLimit(math.MaxInt))
 		if err != nil {
