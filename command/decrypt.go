@@ -7,12 +7,10 @@ import (
 	"encoding/hex"
 	"fmt"
 	"log"
-	"math"
 
 	"github.com/amovah/simple-cli-encrypter/core"
 	"github.com/cqroot/prompt"
 	"github.com/cqroot/prompt/input"
-	"github.com/cqroot/prompt/write"
 	"github.com/spf13/cobra"
 )
 
@@ -22,7 +20,7 @@ var decryptCmd = &cobra.Command{
 	Short:   "decrypt a text",
 	Aliases: []string{"dec"},
 	Run: func(cmd *cobra.Command, args []string) {
-		userTxt, err := prompt.New().Ask("Data:").Write("", write.WithCharLimit(math.MaxInt))
+		userTxt, err := prompt.New().Ask("Data:").Input("")
 		if err != nil {
 			log.Fatal(err)
 		}
