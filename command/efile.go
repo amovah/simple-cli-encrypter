@@ -37,7 +37,8 @@ var efileCmd = &cobra.Command{
 			log.Fatal(err)
 		}
 
-		result := hex.EncodeToString(encrypted)
+		result := make([]byte, hex.EncodedLen(len(encrypted)))
+		hex.Encode(result, encrypted)
 
 		outputPath, err := cmd.Flags().GetString("output")
 		if err != nil {
@@ -45,7 +46,7 @@ var efileCmd = &cobra.Command{
 		}
 
 		if len(outputPath) > 0 {
-			err := os.WriteFile(outputPath, []byte(result), 0777)
+			err := os.WriteFile(outputPath, result, 0777)
 			if err != nil {
 				log.Fatal(err)
 			}

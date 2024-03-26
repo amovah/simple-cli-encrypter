@@ -32,12 +32,13 @@ var dfileCmd = &cobra.Command{
 			log.Fatal(err)
 		}
 
-		encrypted, err := hex.DecodeString(string(fileContent))
+		encryptedTxt := make([]byte, hex.DecodedLen(len(fileContent)))
+		_, err = hex.Decode(encryptedTxt, fileContent)
 		if err != nil {
 			log.Fatal(err)
 		}
 
-		result, err := core.Decrypt([]byte(userPass), encrypted)
+		result, err := core.Decrypt([]byte(userPass), encryptedTxt)
 		if err != nil {
 			log.Fatal(err)
 		}
